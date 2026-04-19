@@ -17,18 +17,18 @@ export class KeycloakService {
         realm: 'whatsapp-clone',
         clientId: 'whatsapp-clone-app'
       })
-      return this._keycloak;
     }
+    return this._keycloak;
   }
 
   async init() {
-    const authenticated = await this.keycloak.init({
+    const authenticated = await this.keycloak?.init({
       onLoad: 'login-required'
     });
   }
 
   async login() {
-    await this.keycloak.login()
+    await this.keycloak?.login()
   }
 
   get userId(): string {
@@ -36,18 +36,18 @@ export class KeycloakService {
   }
 
   get isTokenValid() {
-    return !this.keycloak.isTokenExpired();
+    return !this.keycloak?.isTokenExpired();
   }
 
   get fullName () {
-    return this.keycloak.tokenParsed?.['name']
+    return this.keycloak?.tokenParsed?.['name']
   }
 
   logout() {
-    return this.keycloak.logout({redirectUri: 'http://localhost:4200'})
+    return this.keycloak?.logout({redirectUri: 'http://localhost:4200'})
   }
 
   accountManagement () {
-    return this.keycloak.accountManagement()
+    return this.keycloak?.accountManagement()
   }
 }
