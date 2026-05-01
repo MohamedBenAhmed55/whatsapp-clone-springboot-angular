@@ -17,7 +17,7 @@ export class ChatListComponent {
   chats: InputSignal<ChatResponse[]> = input<ChatResponse[]>([]);
   searchNewContact = false;
   contacts: Array<UserResponse> = []
-  chatSelected = output<ChatResponse>()
+  chatSelected = output<ChatResponse>();
   // @Output() chatSelected = new EventEmitter<ChatResponse>();
 
   constructor(

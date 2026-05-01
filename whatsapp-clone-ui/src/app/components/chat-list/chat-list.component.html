@@ -23,7 +23,6 @@
   </div>
 
 </div>
-
 <div class="chat-list mt-3">
   @if (chats().length && !searchNewContact) {
     @for (chat of chats(); track chat) {
@@ -48,7 +47,7 @@
           <span class="msg-date"
                 [class.unread]="chat.unreadCount && chat.unreadCount > 0"
           >
-            {{ chat.lastMessageTime | date:'dd.MM.yy HH:MM'}}
+            {{ chat.lastMessageTime | date:'dd.MM.yy HH:mm'}}
           </span>
           @if (chat.unreadCount && chat.unreadCount > 0) {
             <small class="unread-msg-badge">{{chat.unreadCount}}</small>
@@ -70,11 +69,10 @@
             @if(contact.online) {
               <small class="text-secondary">Online</small>
             } @else {
-              <small class="text-secondary">Last seen&nbsp;{{contact.lastSeen | date: 'dd.mm.yyyy HH:MM'}}</small>
+              <small class="text-secondary">Last seen&nbsp;{{ contact.lastSeen | date:'dd.mm.yyyy HH:mm' }}</small>
             }
           </div>
         </div>
-
       </div>
     }
   } @else {
