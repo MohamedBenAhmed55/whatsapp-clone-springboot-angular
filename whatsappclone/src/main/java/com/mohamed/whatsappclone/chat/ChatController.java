@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/va/chats")
+@RequestMapping("/api/v1/chats")
 @RequiredArgsConstructor
 @Tag(name = "Chat")
 public class ChatController {
