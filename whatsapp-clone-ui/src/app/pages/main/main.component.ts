@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ChatListComponent} from '../../components/chat-list/chat-list.component';
 import {ChatResponse} from '../../services/models/chat-response';
 import {ChatService} from '../../services/services/chat.service';
@@ -22,7 +22,7 @@ import * as console from 'node:console';
   standalone: true,
   styleUrl: './main.component.scss'
 })
-export class MainComponent implements OnInit, OnDestroy {
+export class MainComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   chats: Array<ChatResponse> = []
   selectedChat: ChatResponse = {};
@@ -30,6 +30,7 @@ export class MainComponent implements OnInit, OnDestroy {
   showEmojis: boolean = false;
   messageContent: string = '';
   socketClient: any = null;
+  @ViewChild('scrollableDiv') scrollableDiv: ElementRef<HTMLDivElement>;
   private notificationSubscription: any;
 
   constructor(
@@ -37,6 +38,10 @@ export class MainComponent implements OnInit, OnDestroy {
     private keycloakService: KeycloakService,
     private messageService: MessageService
   ) {
+  }
+
+  ngAfterViewChecked() {
+    this.scrollBottom();
   }
 
   ngOnDestroy(): void {
@@ -266,5 +271,13 @@ export class MainComponent implements OnInit, OnDestroy {
       return null;
     }
     return htmlInputTarget?.files[0];
+  }
+
+  // Scroll to the bottom automatically when we receive a new message
+  private scrollBottom() {
+    if(this.scrollableDiv){
+      const div = this.scrollableDiv.nativeElement;
+      div.scrollTop = div.scrollHeight;
+    }
   }
 }
