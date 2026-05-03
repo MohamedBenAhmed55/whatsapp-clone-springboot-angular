@@ -13,7 +13,6 @@ import {MessageRequest} from '../../services/models/message-request';
 import * as Stomp from 'stompjs';
 import SockJS from 'sockjs-client'
 import {Notification} from './notification';
-import * as console from 'node:console';
 
 @Component({
   selector: 'app-main',
@@ -26,11 +25,11 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   chats: Array<ChatResponse> = []
   selectedChat: ChatResponse = {};
-  chatMessages: MessageResponse[] = [];
-  showEmojis: boolean = false;
+  chatMessages: Array<MessageResponse> = [];
+  showEmojis = false;
   messageContent: string = '';
   socketClient: any = null;
-  @ViewChild('scrollableDiv') scrollableDiv: ElementRef<HTMLDivElement>;
+  @ViewChild('scrollableDiv') scrollableDiv!: ElementRef<HTMLDivElement>;
   private notificationSubscription: any;
 
   constructor(
@@ -80,16 +79,16 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewChecked {
 
   private getAllChatMessages(chatId: string) {
     this.messageService.getAllMessages({
-      'chat-id': chatId,
+      'chat-id': chatId
     }).subscribe({
-      next: (messages => {
+      next: (messages) => {
         this.chatMessages = messages;
-      })
-    })
+      }
+    });
   }
 
   private setMessagesToSeen() {
-    this.messageService.setMessageToSeen$Response({
+    this.messageService.setMessageToSeen({
       'chat-id': this.selectedChat.id as string
     }).subscribe({
       next: () => {}
@@ -196,7 +195,7 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewChecked {
   private initWebSocket() {
     if (this.keycloakService.keycloak.tokenParsed?.sub) {
       let ws = new SockJS('http://localhost:8080/ws');
-      this.socketClient = Stomp.over(<WebSocket>ws);
+      this.socketClient = Stomp.over(ws);
       const subUrl = `/user/${this.keycloakService.keycloak.tokenParsed?.sub}/chat`;
       this.socketClient.connect({'Authorization': `Bearer ${ 'Bearer ' + this.keycloakService.userId}`},
         () => {
@@ -204,13 +203,14 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewChecked {
           (message: any ) => {
             const notification: Notification = JSON.parse(message.body);
 
-            this.handleNotification(notification);
-          },
-          () => console.error('Error while connection to webSocket'));
-
+              this.handleNotification(notification);
+            }
+          );
+        },
+        (error: any) => {
+          console.error('STOMP Connection Error: ', error);
         }
-
-        );
+      );
     }
   }
 
@@ -258,7 +258,7 @@ export class MainComponent implements OnInit, OnDestroy, AfterViewChecked {
           lastMessage: notification.content,
           name: notification.chatName,
           unreadCount: 1,
-          lastMessageTime: new Date().toString(),
+          lastMessageTime: new Date().toString()
         }
         this.chats.unshift(newChat);
       }
